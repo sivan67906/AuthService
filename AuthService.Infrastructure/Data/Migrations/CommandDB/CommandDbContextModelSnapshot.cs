@@ -141,8 +141,8 @@ namespace AuthService.Infrastructure.Data.Migrations.CommandDB
                         new
                         {
                             Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
-                            ConcurrencyStamp = "f305e6d7-8155-4c09-93f0-e8dd2145a0cb",
-                            CreatedAt = new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(421),
+                            ConcurrencyStamp = "A1B2C3D4-E5F6-7890-ABCD-EF1234567891",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "System Administrator with full access",
                             IsActive = true,
                             Name = "Admin",
@@ -151,8 +151,8 @@ namespace AuthService.Infrastructure.Data.Migrations.CommandDB
                         new
                         {
                             Id = new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901"),
-                            ConcurrencyStamp = "847fb843-8a2e-4e7b-856a-b7afd2637fcb",
-                            CreatedAt = new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(682),
+                            ConcurrencyStamp = "B2C3D4E5-F6A7-8901-BCDE-F12345678902",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Regular customer user",
                             IsActive = true,
                             Name = "Customer",
@@ -161,8 +161,8 @@ namespace AuthService.Infrastructure.Data.Migrations.CommandDB
                         new
                         {
                             Id = new Guid("c3d4e5f6-a7b8-9012-cdef-012345678912"),
-                            ConcurrencyStamp = "913e2a00-3a3a-4fb5-895f-119fb0de0420",
-                            CreatedAt = new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(730),
+                            ConcurrencyStamp = "C3D4E5F6-A7B8-9012-CDEF-012345678913",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Description = "Vendor with product management access",
                             IsActive = true,
                             Name = "Vendor",

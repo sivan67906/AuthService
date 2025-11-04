@@ -303,9 +303,9 @@ namespace AuthService.Infrastructure.Data.Migrations.CommandDB
                 columns: new[] { "Id", "ConcurrencyStamp", "CreatedAt", "Description", "IsActive", "Name", "NormalizedName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), "f305e6d7-8155-4c09-93f0-e8dd2145a0cb", new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(421), "System Administrator with full access", true, "Admin", "ADMIN", null },
-                    { new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901"), "847fb843-8a2e-4e7b-856a-b7afd2637fcb", new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(682), "Regular customer user", true, "Customer", "CUSTOMER", null },
-                    { new Guid("c3d4e5f6-a7b8-9012-cdef-012345678912"), "913e2a00-3a3a-4fb5-895f-119fb0de0420", new DateTime(2025, 11, 4, 0, 48, 6, 821, DateTimeKind.Utc).AddTicks(730), "Vendor with product management access", true, "Vendor", "VENDOR", null }
+                    { new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), "A1B2C3D4-E5F6-7890-ABCD-EF1234567891", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "System Administrator with full access", true, "Admin", "ADMIN", null },
+                    { new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901"), "B2C3D4E5-F6A7-8901-BCDE-F12345678902", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Regular customer user", true, "Customer", "CUSTOMER", null },
+                    { new Guid("c3d4e5f6-a7b8-9012-cdef-012345678912"), "C3D4E5F6-A7B8-9012-CDEF-012345678913", new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc), "Vendor with product management access", true, "Vendor", "VENDOR", null }
                 });
 
             migrationBuilder.CreateIndex(

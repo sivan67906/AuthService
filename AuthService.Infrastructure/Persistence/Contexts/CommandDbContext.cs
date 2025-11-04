@@ -141,8 +141,11 @@ public sealed class CommandDbContext : IdentityDbContext<ApplicationUser, Applic
     {
         // Seed Roles - Fixed GUIDs with valid hexadecimal characters only (0-9, A-F)
         var adminRoleId = Guid.Parse("A1B2C3D4-E5F6-7890-ABCD-EF1234567890");
-        var customerRoleId = Guid.Parse("B2C3D4E5-F6A7-8901-BCDE-F12345678901");  // F6G7 → F6A7
-        var vendorRoleId = Guid.Parse("C3D4E5F6-A7B8-9012-CDEF-012345678912");    // G7H8 → A7B8
+        var customerRoleId = Guid.Parse("B2C3D4E5-F6A7-8901-BCDE-F12345678901");
+        var vendorRoleId = Guid.Parse("C3D4E5F6-A7B8-9012-CDEF-012345678912");
+
+        // ✅ Use fixed values instead of DateTime.UtcNow and Guid.NewGuid()
+        var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         builder.Entity<ApplicationRole>().HasData(
             new ApplicationRole
@@ -151,8 +154,9 @@ public sealed class CommandDbContext : IdentityDbContext<ApplicationUser, Applic
                 Name = "Admin",
                 NormalizedName = "ADMIN",
                 Description = "System Administrator with full access",
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow
+                ConcurrencyStamp = "A1B2C3D4-E5F6-7890-ABCD-EF1234567891", // ✅ Fixed value
+                CreatedAt = seedDate,  // ✅ Fixed value
+                IsActive = true
             },
             new ApplicationRole
             {
@@ -160,8 +164,9 @@ public sealed class CommandDbContext : IdentityDbContext<ApplicationUser, Applic
                 Name = "Customer",
                 NormalizedName = "CUSTOMER",
                 Description = "Regular customer user",
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow
+                ConcurrencyStamp = "B2C3D4E5-F6A7-8901-BCDE-F12345678902", // ✅ Fixed value
+                CreatedAt = seedDate,  // ✅ Fixed value
+                IsActive = true
             },
             new ApplicationRole
             {
@@ -169,8 +174,9 @@ public sealed class CommandDbContext : IdentityDbContext<ApplicationUser, Applic
                 Name = "Vendor",
                 NormalizedName = "VENDOR",
                 Description = "Vendor with product management access",
-                ConcurrencyStamp = Guid.NewGuid().ToString(),
-                CreatedAt = DateTime.UtcNow
+                ConcurrencyStamp = "C3D4E5F6-A7B8-9012-CDEF-012345678913", // ✅ Fixed value
+                CreatedAt = seedDate,  // ✅ Fixed value
+                IsActive = true
             }
         );
     }
