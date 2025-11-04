@@ -18,7 +18,8 @@ public sealed record RegisterResponse(
     Guid UserId,
     string Email,
     string UserName,
-    string Message
+    string Message,
+    string Token
 );
 
 public sealed class RegisterCommandValidator : AbstractValidator<RegisterCommand>

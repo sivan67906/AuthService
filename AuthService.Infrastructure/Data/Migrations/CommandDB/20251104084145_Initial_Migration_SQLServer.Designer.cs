@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthService.Infrastructure.Data.Migrations.CommandDB
 {
     [DbContext(typeof(CommandDbContext))]
-    [Migration("20251104005057_Initial_Migration_SQLServer")]
+    [Migration("20251104084145_Initial_Migration_SQLServer")]
     partial class Initial_Migration_SQLServer
     {
         /// <inheritdoc />

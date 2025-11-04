@@ -80,7 +80,8 @@ public sealed class RegisterCommandHandler : IRequestHandler<RegisterCommand, Re
                 user.Id,
                 user.Email!,
                 user.UserName!,
-                "Registration successful. Please check your email to confirm your account."
+                "Registration successful. Please check your email to confirm your account.",
+                emailToken
             );
 
             return Result<RegisterResponse>.Success(response);
