@@ -1,4 +1,5 @@
 using AuthService.Application.Features.Authentication.Commands;
+using AuthService.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,10 @@ namespace AuthService.API.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    private readonly IMediatr _mediator;
+    private readonly IMediator _mediator;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IMediatr mediator, ILogger<AuthController> logger)
+    public AuthController(IMediator mediator, ILogger<AuthController> logger)
     {
         _mediator = mediator;
         _logger = logger;
@@ -266,13 +267,13 @@ public class AuthController : ControllerBase
 }
 
 // Placeholder command classes (these would be fully implemented in separate files)
-public record RefreshTokenCommand(string RefreshToken) : IRequest<r<LoginResponse>>;
-public record RevokeTokenCommand(string RefreshToken) : IRequest<r>;
-public record ForgotPasswordCommand(string Email) : IRequest<r>;
-public record ResetPasswordCommand(Guid UserId, string Token, string NewPassword) : IRequest<r>;
-public record ChangePasswordCommand(string CurrentPassword, string NewPassword) : IRequest<r>;
-public record VerifyEmailCommand(Guid UserId, string Token) : IRequest<r>;
-public record ResendConfirmationCommand(string Email) : IRequest<r>;
-public record EnableTwoFactorCommand(string Method) : IRequest<r<object>>;
-public record VerifyTwoFactorCommand(Guid UserId, string Code) : IRequest<r<LoginResponse>>;
-public record ExternalAuthCommand(string Provider, string Token) : IRequest<r<LoginResponse>>;
+public record RefreshTokenCommand(string RefreshToken) : IRequest<Result<LoginResponse>>;
+public record RevokeTokenCommand(string RefreshToken) : IRequest<Result>;
+public record ForgotPasswordCommand(string Email) : IRequest<Result>;
+public record ResetPasswordCommand(Guid UserId, string Token, string NewPassword) : IRequest<Result>;
+public record ChangePasswordCommand(string CurrentPassword, string NewPassword) : IRequest<Result>;
+public record VerifyEmailCommand(Guid UserId, string Token) : IRequest<Result>;
+public record ResendConfirmationCommand(string Email) : IRequest<Result>;
+public record EnableTwoFactorCommand(string Method) : IRequest<Result<object>>;
+public record VerifyTwoFactorCommand(Guid UserId, string Code) : IRequest<Result<LoginResponse>>;
+public record ExternalAuthCommand(string Provider, string Token) : IRequest<Result<LoginResponse>>;

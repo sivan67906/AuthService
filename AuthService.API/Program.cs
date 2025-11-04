@@ -88,7 +88,8 @@ builder.Services.AddDbContext<QueryDbContext>(options =>
         {
             npgsqlOptions.EnableRetryOnFailure(
                 maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30));
+                maxRetryDelay: TimeSpan.FromSeconds(30),
+                errorCodesToAdd: null);  // Added required parameter
             npgsqlOptions.CommandTimeout(30);
         }));
 
