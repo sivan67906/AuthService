@@ -1,4 +1,4 @@
-using AuthService.Application.Features.Authentication.Commands;
+﻿using AuthService.Application.Features.Authentication.Commands;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Xunit;
@@ -39,11 +39,11 @@ public class RegisterCommandValidatorTests
     [InlineData("")]
     [InlineData(" ")]
     [InlineData(null)]
-    public void Validate_WithInvalidEmail_ShouldHaveError(string email)
+    public void Validate_WithInvalidEmail_ShouldHaveError(string? email)  // ← Add ? here
     {
         // Arrange
         var command = new RegisterCommand(
-            Email: email,
+            Email: email!,  // ← Add ! operator to suppress warning in usage
             UserName: "testuser",
             Password: "Test@1234",
             ConfirmPassword: "Test@1234",

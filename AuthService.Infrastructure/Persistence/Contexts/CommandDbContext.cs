@@ -1,4 +1,4 @@
-using AuthService.Domain.Entities;
+﻿using AuthService.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -139,10 +139,10 @@ public sealed class CommandDbContext : IdentityDbContext<ApplicationUser, Applic
 
     private static void SeedData(ModelBuilder builder)
     {
-        // Seed Roles
+        // Seed Roles - Fixed GUIDs with valid hexadecimal characters only (0-9, A-F)
         var adminRoleId = Guid.Parse("A1B2C3D4-E5F6-7890-ABCD-EF1234567890");
-        var customerRoleId = Guid.Parse("B2C3D4E5-F6G7-8901-BCDE-F12345678901");
-        var vendorRoleId = Guid.Parse("C3D4E5F6-G7H8-9012-CDEF-012345678912");
+        var customerRoleId = Guid.Parse("B2C3D4E5-F6A7-8901-BCDE-F12345678901");  // F6G7 → F6A7
+        var vendorRoleId = Guid.Parse("C3D4E5F6-A7B8-9012-CDEF-012345678912");    // G7H8 → A7B8
 
         builder.Entity<ApplicationRole>().HasData(
             new ApplicationRole
