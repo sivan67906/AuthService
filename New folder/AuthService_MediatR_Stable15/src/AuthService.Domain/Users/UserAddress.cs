@@ -1,4 +1,5 @@
 namespace AuthService.Domain.Users;
+
 public sealed class UserAddress
 {
     public Guid Id { get; init; } = Guid.NewGuid();

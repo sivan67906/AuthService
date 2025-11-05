@@ -1,0 +1,28 @@
+
+@host = http://localhost:8080
+
+### Register
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Passw0rd!",
+  "firstName": "Alice",
+  "lastName": "Doe"
+}
+
+### Login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "alice@example.com",
+  "password": "Passw0rd!"
+}
+
+### Use token returned from login
+@accessToken = <paste>
+
+GET {{host}}/api/users/me
+Authorization: Bearer {{accessToken}}

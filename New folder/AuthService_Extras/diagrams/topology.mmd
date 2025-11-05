@@ -1,0 +1,17 @@
+%% Docker Compose + Aspire Resource Topology
+graph TD
+  subgraph Compose
+    A[auth_api] -->|depends_on| B[(sqlserver)]
+    A -->|depends_on| C[(postgres)]
+  end
+
+  subgraph Aspire (optional)
+    H[AppHost]
+    H --> A
+    H --> B
+    H --> C
+  end
+
+  A -->|:8080| User[Client]
+  B -->|:1433| DBA1[SSMS]
+  C -->|:5432| DBA2[psql]

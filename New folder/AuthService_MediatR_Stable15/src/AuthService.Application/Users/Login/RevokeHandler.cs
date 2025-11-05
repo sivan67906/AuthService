@@ -2,6 +2,7 @@ using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Application.Users.Login;
+
 public sealed class RevokeHandler(UserManager<AppUser> userManager) : IRequestHandler<RevokeCommand, bool>
 {
     public async Task<bool> Handle(RevokeCommand request, CancellationToken ct)

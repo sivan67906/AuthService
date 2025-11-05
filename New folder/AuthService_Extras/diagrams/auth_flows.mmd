@@ -1,0 +1,40 @@
+%% Authentication Flows
+sequenceDiagram
+  participant U as User
+  participant API as API
+  participant App as Application (MediatR)
+  participant Id as Identity (UserManager/SignInManager)
+  participant JWT as JwtTokenService
+  participant SQL as WriteDbContext
+  participant PG as ReadDbContext
+
+  U->>API: POST /api/auth/register
+  API->>App: RegisterCommand
+  App->>Id: Create user + add role
+  Id-->>SQL: Save user
+  App-->>U: Confirmation link (log)
+
+  U->>API: GET /api/auth/register/confirm?userId&token
+  API->>App: ConfirmCommand
+  App->>Id: Confirm Email
+  App-->>U: OK
+
+  U->>API: POST /api/auth/login
+  API->>App: LoginCommand
+  App->>Id: PasswordSignInAsync
+  App->>JWT: CreateAccessToken + RefreshToken
+  App-->>U: tokens
+
+  U->>API: GET /api/users/me (Bearer)
+  API->>App: GetProfileQuery
+  App->>Id: Load user + roles
+  App-->>U: Profile
+
+  U->>API: POST /api/users/addresses (Bearer)
+  API->>App: CreateAddressCommand
+  App->>SQL: Insert Address
+  App-->>U: Created
+  U->>API: GET /api/users/addresses (Bearer)
+  API->>App: GetAddressesQuery
+  App->>PG: Query Addresses
+  App-->>U: List

@@ -2,6 +2,7 @@ using FluentValidation;
 using MediatR;
 
 namespace AuthService.Application.Common.Behaviors;
+
 public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
     where TRequest : IRequest<TResponse>

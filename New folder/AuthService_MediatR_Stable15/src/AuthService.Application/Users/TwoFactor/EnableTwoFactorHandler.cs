@@ -2,6 +2,7 @@ using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Application.Users.TwoFactor;
+
 public sealed class EnableTwoFactorHandler(UserManager<AppUser> userManager) : IRequestHandler<EnableTwoFactorCommand, string?>
 {
     public async Task<string?> Handle(EnableTwoFactorCommand request, CancellationToken ct)

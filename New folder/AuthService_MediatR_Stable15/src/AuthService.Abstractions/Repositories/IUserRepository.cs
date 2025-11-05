@@ -1,5 +1,6 @@
 using AuthService.Domain.Users;
 namespace AuthService.Abstractions.Repositories;
+
 public interface IUserRepository
 {
     Task<AppUser?> FindByEmailAsync(string email, CancellationToken ct = default);

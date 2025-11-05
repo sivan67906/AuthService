@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 
 namespace AuthService.Application.Users.Profile;
+
 public sealed class GetProfileHandler(UserManager<AppUser> userManager) : IRequestHandler<GetProfileQuery, ProfileResponse>
 {
     public async Task<ProfileResponse> Handle(GetProfileQuery request, CancellationToken ct)

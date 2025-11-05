@@ -1,10 +1,10 @@
 using AuthService.Abstractions.Auth;
 using AuthService.Abstractions.Repositories;
+using AuthService.Domain.Users;
 using AuthService.Infrastructure.Auth;
 using AuthService.Infrastructure.Email;
 using AuthService.Infrastructure.Persistence;
 using AuthService.Infrastructure.Repositories;
-using AuthService.Domain.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

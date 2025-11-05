@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 namespace AuthService.Api.Features.Users;
+
 [ApiController]
 [Authorize]
 [Route("api/users")]

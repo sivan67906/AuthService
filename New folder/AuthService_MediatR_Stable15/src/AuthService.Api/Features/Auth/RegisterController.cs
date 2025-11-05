@@ -3,6 +3,7 @@ using AuthService.Contracts.Users;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 namespace AuthService.Api.Features.Auth;
+
 [ApiController]
 [Route("api/auth/register")]
 public sealed class RegisterController(IMediator mediator) : ControllerBase
@@ -11,7 +12,7 @@ public sealed class RegisterController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> Register(RegisterRequest request, CancellationToken ct)
     {
         var result = await mediator.Send(new RegisterCommand(request), ct);
-        return Ok(new { Message = "User created. Please confirm email.", result.UserId, result.Email });
+        return Ok(new { Message = "User created. Please confirm email.", result.UserId, result.Email, result.Token });
     }
     [HttpGet("confirm")]
     public async Task<IActionResult> ConfirmEmail([FromQuery] Guid userId, [FromQuery] string token, CancellationToken ct)

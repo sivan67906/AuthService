@@ -1,0 +1,51 @@
+/* --- AuthService Swagger Theme (Clean Darkish) --- */
+:root {
+  --primary: #7c3aed;
+  --accent: #22d3ee;
+  --bg: #0f172a;
+  --panel: #111827;
+  --text: #e5e7eb;
+  --muted: #94a3b8;
+}
+html, body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+.swagger-ui .topbar {
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+.swagger-ui .topbar .download-url-wrapper .select-label,
+.swagger-ui .topbar .download-url-wrapper .url {
+  color: #fff !important;
+}
+.swagger-ui .scheme-container,
+.swagger-ui .information-container,
+.swagger-ui .opblock-tag-section,
+.swagger-ui .model,
+.swagger-ui .opblock,
+.swagger-ui .wrapper {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+}
+.swagger-ui .opblock .opblock-summary {
+  background: #0b1220 !important;
+}
+.swagger-ui .model-box,
+.swagger-ui .model-title,
+.swagger-ui .parameter__name,
+.swagger-ui .parameter__type {
+  color: var(--muted) !important;
+}
+.swagger-ui .btn {
+  border-radius: 9999px !important;
+  border-color: var(--accent) !important;
+  color: var(--text) !important;
+}
+.swagger-ui .opblock .opblock-summary-method {
+  border-radius: 6px;
+  color: #000;
+}
+.swagger-ui .opblock.opblock-post .opblock-summary-method { background: #34d399 !important; }
+.swagger-ui .opblock.opblock-get  .opblock-summary-method { background: #60a5fa !important; }
+.swagger-ui .opblock.opblock-put  .opblock-summary-method { background: #fbbf24 !important; }
+.swagger-ui .opblock.opblock-delete .opblock-summary-method { background: #f87171 !important; }

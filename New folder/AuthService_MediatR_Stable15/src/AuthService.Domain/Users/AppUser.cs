@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Domain.Users;
+
 public sealed class AppUser : IdentityUser<Guid>
 {
     public string? FirstName { get; set; }

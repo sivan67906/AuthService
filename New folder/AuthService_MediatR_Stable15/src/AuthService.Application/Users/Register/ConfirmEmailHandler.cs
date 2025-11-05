@@ -2,6 +2,7 @@ using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Application.Users.Register;
+
 public sealed class ConfirmEmailHandler(UserManager<AppUser> userManager) : IRequestHandler<ConfirmEmailCommand, bool>
 {
     public async Task<bool> Handle(ConfirmEmailCommand request, CancellationToken ct)

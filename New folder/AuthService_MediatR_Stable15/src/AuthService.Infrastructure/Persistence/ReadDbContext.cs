@@ -1,6 +1,7 @@
 using AuthService.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 namespace AuthService.Infrastructure.Persistence;
+
 public sealed class ReadDbContext : DbContext
 {
     public ReadDbContext(DbContextOptions<ReadDbContext> options) : base(options) { }

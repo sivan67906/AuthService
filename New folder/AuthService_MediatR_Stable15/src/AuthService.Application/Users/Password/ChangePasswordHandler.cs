@@ -2,6 +2,7 @@ using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Application.Users.Password;
+
 public sealed class ChangePasswordHandler(UserManager<AppUser> userManager) : IRequestHandler<ChangePasswordCommand, bool>
 {
     public async Task<bool> Handle(ChangePasswordCommand request, CancellationToken ct)

@@ -1,17 +1,14 @@
-using Microsoft.AspNetCore.Authentication;
 using System.Text;
 using AuthService.Application;
-using AuthService.Infrastructure;
-using AuthService.Infrastructure.Auth;
 using AuthService.Domain.Users;
+using AuthService.Infrastructure;
+using AuthService.Infrastructure.Persistence;
 using FluentValidation.AspNetCore;
-using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
-using AuthService.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,16 +17,21 @@ builder.Host.UseSerilog();
 builder.Services.AddApplication().AddInfrastructure(builder.Configuration);
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
-builder.Services.AddAuthentication(o => { 
-        o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    })
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
     .AddJwtBearer(o =>
     {
         o.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true, ValidateAudience = true, ValidateIssuerSigningKey = true, ValidateLifetime = true,
-            ValidIssuer = jwtSection["Issuer"], ValidAudience = jwtSection["Audience"],
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+            ValidIssuer = jwtSection["Issuer"],
+            ValidAudience = jwtSection["Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSection["Key"]!)),
             ClockSkew = TimeSpan.FromSeconds(30)
         };
@@ -48,7 +50,7 @@ builder.Services.AddCors(o => o.AddDefaultPolicy(p => p.AllowAnyHeader().AllowAn
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()){ app.UseSwagger(); app.UseSwaggerUI(); }
+if (app.Environment.IsDevelopment()) { app.UseSwagger(); app.UseSwaggerUI(); }
 app.UseSerilogRequestLogging();
 app.UseCors();
 app.UseAuthentication();
@@ -66,7 +68,7 @@ using (var scope = app.Services.CreateScope())
     foreach (var r in roles) if (!await roleManager.RoleExistsAsync(r)) await roleManager.CreateAsync(new IdentityRole<Guid>(r));
     var adminEmail = "admin@demo.local";
     var admin = await userManager.Users.FirstOrDefaultAsync(u => u.Email == adminEmail);
-    if (admin is null){ admin = new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true, FirstName = "Admin", LastName = "User" }; await userManager.CreateAsync(admin, "Admin@12345"); await userManager.AddToRolesAsync(admin, roles); }
+    if (admin is null) { admin = new AppUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true, FirstName = "Admin", LastName = "User" }; await userManager.CreateAsync(admin, "Admin@12345"); await userManager.AddToRolesAsync(admin, roles); }
 }
 
 app.Run();

@@ -1,1 +1,2 @@
-using Microsoft.Extensions.DependencyInjection; using Microsoft.Extensions.Hosting; namespace AuthService.ServiceDefaults; public static class ServiceDefaults { public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder){ return builder; } }
+using Microsoft.Extensions.Hosting;
+namespace AuthService.ServiceDefaults; public static class ServiceDefaults { public static IHostApplicationBuilder AddServiceDefaults(this IHostApplicationBuilder builder) { return builder; } }

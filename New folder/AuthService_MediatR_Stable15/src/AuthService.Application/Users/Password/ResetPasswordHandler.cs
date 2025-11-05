@@ -2,6 +2,7 @@ using AuthService.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 namespace AuthService.Application.Users.Password;
+
 public sealed class ResetPasswordHandler(UserManager<AppUser> userManager) : IRequestHandler<ResetPasswordCommand, bool>
 {
     public async Task<bool> Handle(ResetPasswordCommand request, CancellationToken ct)

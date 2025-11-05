@@ -1,10 +1,11 @@
-using Microsoft.Extensions.Configuration;
+using AuthService.Abstractions.Auth;
 using AuthService.Contracts.Users;
 using AuthService.Domain.Users;
-using AuthService.Abstractions.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 namespace AuthService.Application.Users.Login;
+
 public sealed class LoginHandler(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IJwtTokenService jwt, IConfiguration cfg) : IRequestHandler<LoginCommand, AuthResponse>
 {
     public async Task<AuthResponse> Handle(LoginCommand request, CancellationToken ct)

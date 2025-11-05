@@ -1,8 +1,9 @@
-using AuthService.Domain.Users;
 using AuthService.Abstractions.Repositories;
+using AuthService.Domain.Users;
 using MediatR;
 
 namespace AuthService.Application.Users.Addresses;
+
 public sealed class CreateAddressHandler(IUserRepository repo) : IRequestHandler<CreateAddressCommand, Guid>
 {
     public async Task<Guid> Handle(CreateAddressCommand request, CancellationToken ct)

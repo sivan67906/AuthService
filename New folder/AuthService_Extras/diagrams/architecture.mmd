@@ -1,0 +1,23 @@
+%% AuthService High-Level Architecture
+flowchart LR
+  Client[[Client / Swagger / Postman]]
+  API[AuthService.Api (Controllers)]
+  App[Application (MediatR CQRS, Validators)]
+  Abs[Abstractions (Interfaces)]
+  Dom[Domain (Entities, Value Objects)]
+  Infra[Infrastructure (EF/Identity/JWT/Repos)]
+  Write[(SQL Server - WriteDbContext)]
+  Read[(PostgreSQL - ReadDbContext)]
+  Aspire[(Aspire AppHost - optional)]
+
+  Client --> API
+  API --> App
+  App --> Abs
+  App --> Dom
+  App --> Infra
+  Infra --> Dom
+  Infra --> Write
+  Infra --> Read
+  Aspire -. optional orchestration .-> API
+  Aspire -. optional orchestration .-> Write
+  Aspire -. optional orchestration .-> Read

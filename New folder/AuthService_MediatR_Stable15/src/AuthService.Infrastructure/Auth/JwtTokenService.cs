@@ -11,7 +11,10 @@ namespace AuthService.Infrastructure.Auth;
 public sealed class JwtTokenService : IJwtTokenService
 {
     private readonly IConfiguration _cfg;
-    public JwtTokenService(IConfiguration cfg) => _cfg = cfg;
+    public JwtTokenService(IConfiguration cfg)
+    {
+        _cfg = cfg;
+    }
 
     public (string accessToken, DateTime expiresUtc) CreateAccessToken(AppUser user, IEnumerable<string> roles)
     {
@@ -40,5 +43,8 @@ public sealed class JwtTokenService : IJwtTokenService
         return (jwt, expires);
     }
 
-    public string CreateRefreshToken() => Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+    public string CreateRefreshToken()
+    {
+        return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+    }
 }
