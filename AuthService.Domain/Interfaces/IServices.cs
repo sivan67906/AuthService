@@ -4,45 +4,91 @@ namespace AuthService.Domain.Interfaces;
 
 public interface IJwtService
 {
-    string GenerateAccessToken(Guid userId, string email, string username, IEnumerable<string> roles, IEnumerable<string> claims);
+    string GenerateAccessToken(
+        Guid userId,
+        string email,
+        string username,
+        IEnumerable<string> roles,
+        IDictionary<string, string>? additionalClaims = null);
+
     string GenerateRefreshToken();
     string GetJwtIdFromToken(string token);
-    bool ValidateToken(string token);
-    Task<Result<string>> RefreshAccessTokenAsync(string refreshToken, CancellationToken cancellationToken = default);
+    bool ValidateToken(string token, out Guid userId);
+    Task<Result<string>> RefreshAccessTokenAsync(
+        string refreshToken,
+        CancellationToken cancellationToken = default);
 }
 
 public interface IEmailService
 {
-    Task<Result> SendEmailAsync(string to, string subject, string body, CancellationToken cancellationToken = default);
-    Task<Result> SendEmailConfirmationAsync(string email, string confirmationLink, CancellationToken cancellationToken = default);
-    Task<Result> SendPasswordResetAsync(string email, string resetLink, CancellationToken cancellationToken = default);
-    Task<Result> SendTwoFactorCodeAsync(string email, string code, CancellationToken cancellationToken = default);
+    Task<Result> SendEmailAsync(
+        string to,
+        string subject,
+        string body,
+        bool isHtml = true,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendEmailConfirmationAsync(
+        string email,
+        string confirmationLink,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendPasswordResetAsync(
+        string email,
+        string resetLink,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendTwoFactorCodeAsync(
+        string email,
+        string code,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendWelcomeEmailAsync(
+        string email,
+        string username,
+        CancellationToken cancellationToken = default);
 }
 
 public interface ISmsService
 {
-    Task<Result> SendSmsAsync(string phoneNumber, string message, CancellationToken cancellationToken = default);
-    Task<Result> SendTwoFactorCodeAsync(string phoneNumber, string code, CancellationToken cancellationToken = default);
+    Task<Result> SendSmsAsync(
+        string phoneNumber,
+        string message,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendTwoFactorCodeAsync(
+        string phoneNumber,
+        string code,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> SendVerificationCodeAsync(
+        string phoneNumber,
+        string code,
+        CancellationToken cancellationToken = default);
 }
 
 public interface ITwoFactorService
 {
     string GenerateSecret();
     string GenerateCode(string secret);
-    bool ValidateCode(string secret, string code);
+    bool ValidateCode(string secret, string code, int windowSize = 1);
     string GenerateQrCodeUri(string email, string secret, string issuer = "AuthService");
-}
-
-public interface IPasswordHasher
-{
-    string HashPassword(string password);
-    bool VerifyPassword(string password, string hash);
+    byte[] GenerateQrCodeImage(string qrCodeUri);
 }
 
 public interface IExternalAuthService
 {
-    Task<Result<ExternalAuthResult>> AuthenticateGoogleAsync(string idToken, CancellationToken cancellationToken = default);
-    Task<Result<ExternalAuthResult>> AuthenticateMicrosoftAsync(string accessToken, CancellationToken cancellationToken = default);
+    Task<Result<ExternalAuthResult>> AuthenticateGoogleAsync(
+        string idToken,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<ExternalAuthResult>> AuthenticateMicrosoftAsync(
+        string accessToken,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<ExternalAuthResult>> AuthenticateFacebookAsync(
+        string accessToken,
+        CancellationToken cancellationToken = default);
 }
 
 public sealed record ExternalAuthResult(
@@ -51,5 +97,6 @@ public sealed record ExternalAuthResult(
     string LastName,
     string Provider,
     string ProviderKey,
-    string? ProfilePictureUrl = null
-);
+    string? ProfilePictureUrl = null,
+    string? PhoneNumber = null,
+    bool EmailVerified = false);

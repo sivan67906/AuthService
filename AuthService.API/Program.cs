@@ -1,13 +1,11 @@
-using AuthService.Application.Common.Behaviors;
-using AuthService.Application.Features.Authentication.Commands;
+﻿using AuthService.Application.Common.Behaviors;
 using AuthService.Domain.Entities;
 using AuthService.Domain.Interfaces;
-using AuthService.Infrastructure.Persistence;
 using AuthService.Infrastructure.Persistence.Contexts;
+using AuthService.Infrastructure.Persistence.Repositories;
 using AuthService.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,29 +17,35 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Serilog
-Log.Logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .WriteTo.Console()
-    .WriteTo.File("logs/authservice-.txt", rollingInterval: RollingInterval.Day)
-    .CreateLogger();
+builder.Host.UseSerilog((context, configuration) =>
+    configuration
+        .ReadFrom.Configuration(context.Configuration)
+        .WriteTo.Console()
+        .WriteTo.File("logs/authservice-.txt", rollingInterval: RollingInterval.Day));
 
-builder.Host.UseSerilog();
-
-// Add services to the container
+// Add controllers
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // Configure Swagger with JWT support
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddSwaggerGen(options =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo 
-    { 
-        Title = "AuthService API", 
-        Version = "v1",
-        Description = "Authentication and Authorization Microservice with CQRS and Dual Database"
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "AuthService API - Improved",
+        Version = "v2.0",
+        Description = """
+            Enterprise Authentication & Authorization Microservice
+            
+            ✅ Latest .NET 9 & C# 12 Features
+            ✅ Repository Pattern (No UnitOfWork)
+            ✅ Vertical Slice Architecture
+            ✅ CQRS with MediatR
+            ✅ Complete Feature Implementation
+            """
     });
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
         Name = "Authorization",
@@ -50,7 +54,7 @@ builder.Services.AddSwaggerGen(c =>
         Scheme = "Bearer"
     });
 
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
@@ -61,37 +65,30 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            Array.Empty<string>()
+            []
         }
     });
 });
 
-// Configure Dual Database Contexts
-// Command Database - SQL Server (Write operations)
+// Configure Database Contexts
 builder.Services.AddDbContext<CommandDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("CommandDatabase"),
         sqlOptions =>
         {
-            sqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorNumbersToAdd: null);
+            sqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
             sqlOptions.CommandTimeout(30);
         }));
 
-// Query Database - PostgreSQL (Read operations)
 builder.Services.AddDbContext<QueryDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("QueryDatabase"),
         npgsqlOptions =>
         {
-            npgsqlOptions.EnableRetryOnFailure(
-                maxRetryCount: 5,
-                maxRetryDelay: TimeSpan.FromSeconds(30),
-                errorCodesToAdd: null);  // Added required parameter
+            npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 5, maxRetryDelay: TimeSpan.FromSeconds(30), errorCodesToAdd: null);
             npgsqlOptions.CommandTimeout(30);
-        }));
+        })
+    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 
 // Configure Identity
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -116,14 +113,10 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
 .AddEntityFrameworkStores<CommandDbContext>()
 .AddDefaultTokenProviders();
 
-// Configure token lifespan
-builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
-{
-    options.TokenLifespan = TimeSpan.FromHours(3);
-});
-
 // Configure JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -142,8 +135,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = jwtSettings["Issuer"],
         ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new InvalidOperationException("JWT SecretKey not configured"))),
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey)),
         ClockSkew = TimeSpan.Zero
     };
 })
@@ -161,40 +153,32 @@ builder.Services.AddAuthentication(options =>
 // Configure Authorization Policies
 builder.Services.AddAuthorization(options =>
 {
-    // Simple Authorization - Already handled by [Authorize] attribute
-
-    // Role-Based Authorization
     options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
     options.AddPolicy("CustomerOnly", policy => policy.RequireRole("Customer"));
     options.AddPolicy("VendorOnly", policy => policy.RequireRole("Vendor"));
-    options.AddPolicy("AdminOrVendor", policy => policy.RequireRole("Admin", "Vendor"));
-
-    // Claims-Based Authorization
-    options.AddPolicy("EmailVerified", policy => 
-        policy.RequireClaim("email_verified", "true"));
-    options.AddPolicy("TwoFactorEnabled", policy => 
-        policy.RequireClaim("two_factor_enabled", "true"));
-
-    // Policy-Based Authorization
-    options.AddPolicy("MinimumAge18", policy => 
-        policy.Requirements.Add(new MinimumAgeRequirement(18)));
-    options.AddPolicy("ActiveUser", policy => 
-        policy.Requirements.Add(new ActiveUserRequirement()));
+    options.AddPolicy("EmailVerified", policy => policy.RequireClaim("email_verified", "true"));
+    options.AddPolicy("TwoFactorEnabled", policy => policy.RequireClaim("two_factor_enabled", "true"));
 });
 
-// Register Application Services
-builder.Services.AddMediatR(cfg => 
+// Register MediatR with Behaviors
+builder.Services.AddMediatR(cfg =>
 {
-    cfg.RegisterServicesFromAssembly(typeof(RegisterCommand).Assembly);
+    cfg.RegisterServicesFromAssembly(Assembly.Load("AuthService.Application"));
     cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
     cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
 });
 
 // Register FluentValidation
-builder.Services.AddValidatorsFromAssembly(typeof(RegisterCommandValidator).Assembly);
+builder.Services.AddValidatorsFromAssembly(Assembly.Load("AuthService.Application"));
 
-// Register Infrastructure Services
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Register Repositories (NO UnitOfWork!)
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IExternalLoginRepository, ExternalLoginRepository>();
+builder.Services.AddScoped<IUserSessionRepository, UserSessionRepository>();
+
+// Register Services
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ISmsService, SmsService>();
@@ -220,21 +204,22 @@ builder.Services.AddHealthChecks()
     .AddSqlServer(
         builder.Configuration.GetConnectionString("CommandDatabase")!,
         name: "sqlserver-command",
-        tags: new[] { "db", "sql", "command" })
+        tags: ["db", "sql", "command"])
     .AddNpgSql(
         builder.Configuration.GetConnectionString("QueryDatabase")!,
         name: "postgresql-query",
-        tags: new[] { "db", "postgresql", "query" });
+        tags: ["db", "postgresql", "query"]);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline
+// Configure middleware pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService API V1");
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "AuthService API V2.0");
+        c.DocExpansion(Swashbuckle.AspNetCore.SwaggerUI.DocExpansion.None);
     });
 }
 
@@ -249,39 +234,19 @@ app.MapControllers();
 
 // Map Health Check endpoints
 app.MapHealthChecks("/health");
-app.MapHealthChecks("/health/ready", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-{
-    Predicate = check => check.Tags.Contains("ready")
-});
-app.MapHealthChecks("/health/live", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-{
-    Predicate = _ => false
-});
+app.MapHealthChecks("/health/ready");
+app.MapHealthChecks("/health/live");
 
 try
 {
-    Log.Information("Starting AuthService API");
-    app.Run();
+    Log.Information("🚀 Starting AuthService API v2.0 - Improved Edition");
+    await app.RunAsync();
 }
 catch (Exception ex)
 {
-    Log.Fatal(ex, "Application start-up failed");
+    Log.Fatal(ex, "❌ Application start-up failed");
 }
 finally
 {
-    Log.CloseAndFlush();
-}
-
-// Requirement classes for policy-based authorization
-public class MinimumAgeRequirement : IAuthorizationRequirement
-{
-    public int MinimumAge { get; }
-    public MinimumAgeRequirement(int minimumAge)
-    {
-        MinimumAge = minimumAge;
-    }
-}
-
-public class ActiveUserRequirement : IAuthorizationRequirement
-{
+    await Log.CloseAndFlushAsync();
 }
