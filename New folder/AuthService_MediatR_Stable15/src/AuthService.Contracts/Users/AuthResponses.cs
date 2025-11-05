@@ -1,0 +1,1 @@
+namespace AuthService.Contracts.Users; public sealed record AuthResponse(string AccessToken, string RefreshToken, DateTime ExpiresAtUtc); public sealed record ProfileResponse(Guid Id, string Email, string? FirstName, string? LastName, string[] Roles, bool EmailConfirmed, bool TwoFactorEnabled);

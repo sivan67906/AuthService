@@ -1,0 +1,1 @@
+// placeholder - no project mapping required in this simplified AppHost

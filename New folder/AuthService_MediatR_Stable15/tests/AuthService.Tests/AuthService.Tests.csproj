@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.8.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="FluentAssertions" Version="6.12.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AuthService.Application\AuthService.Application.csproj" />
+    <ProjectReference Include="..\..\src\AuthService.Infrastructure\AuthService.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\src\AuthService.Domain\AuthService.Domain.csproj" />
+    <ProjectReference Include="..\..\src\AuthService.Contracts\AuthService.Contracts.csproj" />
+  </ItemGroup>
+  <PropertyGroup><RootNamespace>AuthService.Tests</RootNamespace></PropertyGroup>
+</Project>

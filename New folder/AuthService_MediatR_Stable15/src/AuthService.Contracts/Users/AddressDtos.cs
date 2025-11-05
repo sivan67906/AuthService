@@ -1,0 +1,1 @@
+namespace AuthService.Contracts.Users; public sealed record AddressRequest(string Line1, string? Line2, string City, string State, string PostalCode, string Country); public sealed record AddressResponse(Guid Id, string Line1, string? Line2, string City, string State, string PostalCode, string Country, DateTime CreatedUtc);

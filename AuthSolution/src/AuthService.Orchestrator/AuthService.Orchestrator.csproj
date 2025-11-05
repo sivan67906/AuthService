@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AuthService.Api\AuthService.Api.csproj" />
+    <ProjectReference Include="..\AuthService.ServiceDefaults\AuthService.ServiceDefaults.csproj" />
+  </ItemGroup>
+</Project>

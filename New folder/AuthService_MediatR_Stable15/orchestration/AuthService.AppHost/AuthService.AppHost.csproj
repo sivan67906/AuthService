@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\AuthService.ServiceDefaults\AuthService.ServiceDefaults.csproj" />
+    <PackageReference Include="Aspire.Hosting" Version="9.0.0" />
+  </ItemGroup>
+  <PropertyGroup><OutputType>Exe</OutputType><RootNamespace>AuthService.AppHost</RootNamespace></PropertyGroup>
+</Project>

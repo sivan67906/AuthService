@@ -1,0 +1,48 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: auth_sqlserver
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=YourStrong(!)Password
+    ports: ["1433:1433"]
+    healthcheck:
+      test: ["CMD", "/opt/mssql-tools18/bin/sqlcmd", "-S", "localhost", "-U", "sa", "-P", "YourStrong(!)Password", "-C", "-Q", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  postgres:
+    image: postgres:16
+    container_name: auth_postgres
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=authservice_read
+    ports: ["5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  api:
+    build:
+      context: .
+      dockerfile: src/AuthService.Api/Dockerfile
+    container_name: auth_api
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SqlServer=Server=sqlserver;Database=AuthServiceWrite;User Id=sa;Password=YourStrong(!)Password;TrustServerCertificate=True;
+      - ConnectionStrings__Postgres=Host=postgres;Port=5432;Database=authservice_read;Username=postgres;Password=postgres
+      - Jwt__Key=THIS_IS_A_DEMO_SECRET_CHANGE_ME
+      - Jwt__Issuer=AuthService
+      - Jwt__Audience=AuthService.Client
+      - Jwt__AccessTokenMinutes=30
+      - Jwt__RefreshTokenDays=7
+    ports: ["8080:8080"]

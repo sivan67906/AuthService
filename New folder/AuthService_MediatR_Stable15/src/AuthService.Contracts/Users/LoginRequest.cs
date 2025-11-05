@@ -1,0 +1,1 @@
+namespace AuthService.Contracts.Users; public sealed record LoginRequest(string Email, string Password, string? TwoFactorCode = null);

@@ -1,0 +1,1 @@
+namespace AuthService.Contracts.Users; public sealed record ConfirmEmailRequest(string UserId, string Token);
